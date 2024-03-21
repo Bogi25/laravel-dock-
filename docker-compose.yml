@@ -1,0 +1,89 @@
+version: '3.8'
+networks:
+
+  localnet:
+    name: localnet
+    driver: bridge
+
+services:
+  
+  php-one:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phpTest
+    #restart: unless-stopped
+    # вказання робочого каталогу
+    working_dir: /var/www
+    volumes:
+      - type: volume
+        source: lavareproject
+        target: /var/www/boilerplate
+    depends_on:
+      - sql-t
+      - node-t
+      - nginx-t
+    networks:
+      - localnet
+    environment:
+      DB_HOST: mysqlTest
+      DB_PORT: 3306
+      DB_DATABASE: laravel_db
+      DB_USERNAME: bogi
+      DB_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: superPass
+    command: ["/bin/bash", "-c", "/var/www/La_str.sh"]
+    # command: ["tail", "-f", "/dev/null"]
+
+
+  nginx-t:
+    image: nginx:1.25.4
+    container_name: nginxTest
+    #restart: unless-stopped
+    ports:
+      - '8080:80'
+    networks:
+      - localnet
+    depends_on:
+      - sql-t
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - type: volume
+        source: lavareproject
+        target: /var/www/boilerplate
+    command: ["/bin/bash", "-c", "chown -R www-data:www-data /var/www"]
+
+  sql-t:
+    image: mysql:latest
+    container_name: mysqlTest
+    #restart: unless-stopped
+    networks:
+      - localnet
+    environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_USER: bogi
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: superPass
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - type: volume
+        source: lavareproject
+        target: /var/www/boilerplate
+      
+  node-t:
+    build:
+      context: .
+      dockerfile: Dockerfile1
+    #restart: unless-stopped
+    container_name: nodeTest
+    networks:
+      - localnet
+    command: ["/bin/bash", "-c", "./node-apd.sh"]
+    volumes:
+      - type: volume
+        source: lavareproject
+        target: /var/www/boilerplate
+    
+volumes:
+   lavareproject: {}
+
