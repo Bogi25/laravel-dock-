@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "змінюємо конфігурацію nginx"
+cp /var/www/ng_conf/default.conf /var/www/nginx/default.conf 
 sleep 50
 
 echo "почали виконувати дії php"

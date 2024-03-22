@@ -16,13 +16,13 @@ RUN apt-get update && apt-get install -y \
 # Встановлення Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY ./candle /var/www
-
+COPY ./nginx /var/www/ng_conf
 # Копіювання коду додатку
 COPY ./boilerplate /var/www/boilerplate
 
 RUN mv /var/www/boilerplate/.env.example /var/www/boilerplate/.env
 # RUN rm /var/www/boilerplate/composer.lock
-RUN chown -R www-data:www-data /var/www/boilerplate
+RUN chown -R www-data:www-data /var/www/
 WORKDIR /var/www/boilerplate
 
 # Порт, через який буде доступний додаток
