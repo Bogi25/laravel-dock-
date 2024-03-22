@@ -12,7 +12,8 @@ if [[ "$PWD" != *"laravel-dock-"* ]]; then
     Це може виглядати так:
     cd laravel-dock- && docker-compose down\n"
 fi
-docker-compose up -d
+echo "виконую команду docker compose up -d"
+docker compose up -d
 sleep 5
 docker ps
 echo -e "\ncheck 4 containers should be running."

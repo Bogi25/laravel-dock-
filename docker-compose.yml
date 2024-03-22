@@ -13,16 +13,13 @@ services:
       dockerfile: Dockerfile
     container_name: phpTest
     #restart: unless-stopped
-    # вказання робочого каталогу
-    working_dir: /var/www
     volumes:
       - type: volume
-        source: lavareproject
+        source: lavareproject1
         target: /var/www/boilerplate
     depends_on:
       - sql-t
       - node-t
-      - nginx-t
     networks:
       - localnet
     environment:
@@ -33,25 +30,31 @@ services:
       DB_PASSWORD: 1234
       MYSQL_ROOT_PASSWORD: superPass
     command: ["/bin/bash", "-c", "/var/www/La_str.sh"]
-    # command: ["tail", "-f", "/dev/null"]
 
 
   nginx-t:
     image: nginx:1.25.4
     container_name: nginxTest
-    #restart: unless-stopped
+    # restart: unless-stopped
     ports:
       - '8080:80'
     networks:
       - localnet
     depends_on:
-      - sql-t
+      - php-one
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - type: volume
-        source: lavareproject
+        source: lavareproject1
         target: /var/www/boilerplate
-    command: ["/bin/bash", "-c", "chown -R www-data:www-data /var/www"]
+      - type: bind
+        source: ./boilerplate/storage/logs
+        target: /var/www/boilerplate/storage/logs
+        bind:
+          propagation: rshared
+      - type: bind
+        source: ./candle
+        target: /var/www
 
   sql-t:
     image: mysql:latest
@@ -67,7 +70,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - type: volume
-        source: lavareproject
+        source: lavareproject1
         target: /var/www/boilerplate
       
   node-t:
@@ -81,9 +84,9 @@ services:
     command: ["/bin/bash", "-c", "./node-apd.sh"]
     volumes:
       - type: volume
-        source: lavareproject
+        source: lavareproject1
         target: /var/www/boilerplate
     
 volumes:
-   lavareproject: {}
+   lavareproject1:
 

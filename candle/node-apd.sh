@@ -14,11 +14,11 @@ yarn upgrade
 echo "виконуємо npm install"
 npm install
 
-# echo "виконуємо npm install -g @vue/cli"
-# npm install -g @vue/cli
-
 echo "оновлюємо vue до 3.4.21"
 npm install vue@3.4.21
+
+echo "npm audit fix --force"
+npm audit fix --force
 
 echo "виконуємо yarn run prod"
 yarn run watch

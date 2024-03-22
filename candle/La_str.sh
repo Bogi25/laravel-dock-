@@ -23,5 +23,6 @@ php artisan storage:link
 # sleep 3600
 
 echo "команди виконано"
-ls -la storage/logs/
+
+echo " запускаю php-fpm -F"
 php-fpm -F
